@@ -13,7 +13,7 @@
 train:
 	@ r0: volatile, r1: steps remaining, r2: player pos, r3: next player pos, r4: action, r5: reward
 	@ r6: relative address of current action, r8: num of visits, r9: current value
-	push {r0, r1, r2, r3, r4, r5, lr}
+	push {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, lr}
 	mov r1, r0
 	bl reset	
 	bl get_player_pos
@@ -28,6 +28,10 @@ train_loop:
 	mov r4, r0
 	bl step
 	mov r5, r0
+	cmp r5, #0        @ reset if terminated
+	beq after_reset
+	bl reset
+after_reset:
 	bl get_player_pos
 	mov r3, r0
 
@@ -49,18 +53,25 @@ train_loop:
 	ldr r7, =Qs
 	add r6, r7, r6	
 	vldr s1, [r6]
-	vldr s3, =gamma
-	vldr s4, =alpha 
+	ldr r0, =gamma
+	vldr s3, [r0]
+	ldr r0, =alpha
+	vldr s4, [r0] 
 	vmov s5, r5
 	vcvt.f32.s32 s5, s5
 
 	@ here begins the calculation
+	mov r0, #0
+	vmov s0, r0
+	cmp r5, #0            @ if reward is not zero, the the game has terminated and we skip current value
+	bne after_current_value
 	vmov s0, s2           @ next value
+after_current_value:
 	vmul.f32 s0, s3, s0   @ gamma * (next value)
 	vadd.f32 s0, s5, s0   @ reward + gamma * (next value)
 	vsub.f32 s0, s0, s1   @ reward + gamma * (next value) - current value
 	vmul.f32 s0, s4, s0   @ alpha * (reward + gamma * (next value) - current value)
-	vadd.f32 s0, s1, s1   @ current value + alpha * (reward + gamma * (next value) - current value)
+	vadd.f32 s0, s1, s0   @ current value + alpha * (reward + gamma * (next value) - current value)
 
 	vstr s0, [r6]
 	
@@ -69,7 +80,7 @@ train_loop:
 	b train_loop
 	
 train_finish:
-	pop {r0, r1, r2, r3, r4, r5, lr}
+	pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, lr}
 	bx lr
 
 
