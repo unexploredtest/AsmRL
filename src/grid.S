@@ -2,11 +2,16 @@
 	grid_array: .space 256
 	player_pos: .word 0
 	goal_pos: .word 0
+	player_rep: .asciz "A"
+	empty_rep: .asciz "."
+	goal_rep:  .asciz "O"
+	newline: .byte 10
 
 .section .text
 .global get_player_pos
 .global reset
 .global step
+.global print_board
 
 get_player_pos:
 	ldr r0, =player_pos
@@ -87,4 +92,68 @@ move_left:
 	cmp r6, r7
 	beq after_change
 	b after_nochange
+
+print_board:
+	push {r0, r1, r2, r3, r4, lr}
+	ldr r2, =goal_pos
+	ldr r2, [r2]
 	
+	ldr r3, =player_pos
+	ldr r3, [r3]
+
+	mov r4, #0
+	mov r1, #0
+loop_print:
+	cmp r4, r2
+	bne after_goal
+	ldr r0, =goal_rep
+	bl print_char
+	b finish_char_print
+
+after_goal:
+	cmp r4, r3
+	bne after_player
+	ldr r0, =player_rep
+	bl print_char
+	b finish_char_print
+
+after_player:	
+	ldr r0, =empty_rep
+	bl print_char
+
+finish_char_print:
+	add r1, r1, #1
+	cmp r1, #8
+	bne after_new_row
+	ldr r0, =newline
+	bl print_char
+	mov r1, #0
+
+after_new_row:
+	add r4, r4, #1
+	cmp r4, #64
+	beq finish_print
+	b loop_print
+
+finish_print:
+
+	pop {r0, r1, r2, r3, r4, lr}
+	bx lr
+
+@ arg r0: address to charater to print
+print_char:
+	push {r0, r1, r2, r7}
+
+	mov r1, r0
+	mov r0, #1
+	mov r2, #1
+	mov r7, #4
+
+	svc #0
+	
+	pop {r0, r1, r2, r7}
+	bx lr
+
+
+
+
