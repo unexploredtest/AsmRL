@@ -126,6 +126,7 @@ loop_get_best_action:
 	vldr s1, [r1]
 
 	vcmp.f32 s0, s1
+	vmrs apsr_nzcv, fpscr
 	bgt loop_get_best_action
 	vmov s0, s1
 	sub r0, r2, #1
@@ -155,6 +156,7 @@ loop_get_best_value:
 	vldr s1, [r1]
 
 	vcmp.f32 s0, s1
+	vmrs apsr_nzcv, fpscr
 	bgt loop_get_best_value
 	vmov s0, s1
 	mov r0, r1
