@@ -2,11 +2,20 @@
 .global _start
 
 _start:
-	@ bl reset
-	mov r0, #2
+	mov r1, #100
+	mul r0, r1, r1
+	bl train
+	bl reset
+	bl print_board
+
+print_loop:
+	bl get_player_pos
+	bl get_best_action
 	bl step
-	mov r0, #1
-	bl step
-	@ bl get_player_pos
-    mov r7, #1          @ Load syscall number 1 (exit) into r7
-    swi #0              @ Trigger the software interrupt to perform the syscall
+	bl print_board
+	cmp r0, #0
+	beq print_loop
+
+	mov r0, #0
+    mov r7, #1
+    swi #0
