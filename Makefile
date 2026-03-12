@@ -1,6 +1,6 @@
 ARMGNU ?= arm-linux-gnueabi
 
-OPS = -nostdlib -mfpu=vfp
+OPS = -mfpu=vfp
 
 SRC_DIR = src
 BUILD_DIR = build
