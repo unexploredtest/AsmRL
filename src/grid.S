@@ -101,23 +101,26 @@ print_board:
 	ldr r3, =player_pos
 	ldr r3, [r3]
 
+	ldr r0, =newline
+	bl print_char
+
 	mov r4, #0
 	mov r1, #0
 loop_print:
-	cmp r4, r2
-	bne after_goal
-	ldr r0, =goal_rep
-	bl print_char
-	b finish_char_print
-
-after_goal:
 	cmp r4, r3
 	bne after_player
 	ldr r0, =player_rep
 	bl print_char
 	b finish_char_print
 
-after_player:	
+after_player:
+	cmp r4, r2
+	bne after_goal
+	ldr r0, =goal_rep
+	bl print_char
+	b finish_char_print
+
+after_goal:	
 	ldr r0, =empty_rep
 	bl print_char
 
@@ -136,6 +139,8 @@ after_new_row:
 	b loop_print
 
 finish_print:
+	ldr r0, =newline
+	bl print_char
 
 	pop {r0, r1, r2, r3, r4, lr}
 	bx lr
