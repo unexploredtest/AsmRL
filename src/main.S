@@ -1,9 +1,12 @@
+.section .data
+	train_steps: .word 10000
+
 .section .text
 .global _start
 
 _start:
-	mov r1, #100
-	mul r0, r1, r1
+	ldr r0, =train_steps
+	ldr r0, [r0]
 	bl train
 	bl reset
 	bl print_board
@@ -17,5 +20,5 @@ print_loop:
 	beq print_loop
 
 	mov r0, #0
-    mov r7, #1
-    swi #0
+	mov r7, #1
+	swi #0
