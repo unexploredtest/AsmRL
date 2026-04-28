@@ -7,7 +7,7 @@
 .global get_random_num
 
 get_random_num:
-	push {r1, r2, r3, r4, r5, lr}	
+	push {r1, r2, r3, lr}	
 	
 	ldr r1, =seed
 	ldr r0, [r1]
@@ -25,12 +25,12 @@ get_random_num:
 	@ so we sum the bits
 	bl sum_bits
 
-	pop	{r1, r2, r3, r4, r5, lr}	
+	pop	{r1, r2, r3, lr}	
 	bx lr
 
 @ arg: number, return: sumed bits
 sum_bits:
-	push {r1, r2, r3, r4, r5, lr}
+	push {r1, r3, r4, lr}
 
 	mov r1, r0      @ original number
 	mov r0, #0      @ result
@@ -47,5 +47,5 @@ sum_bits_loop:
 	subs r3, r3, #1 
 	bpl sum_bits_loop
 
-	pop {r1, r2, r3, r4, r5, lr}
+	pop {r1, r3, r4, lr}
 	bx lr

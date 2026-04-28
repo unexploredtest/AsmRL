@@ -12,8 +12,8 @@
 @ parameter. r0: num of training steps
 train:
 	@ r0: volatile, r1: steps remaining, r2: player pos, r3: next player pos, r4: action, r5: reward
-	@ r6: relative address of current action, r8: num of visits, r9: current value
-	push {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, lr}
+	@ r6: relative address of current action, r8: num of visits
+	push {r0, r1, r2, r3, r4, r5, r6, r7, r8, lr}
 	mov r1, r0
 	bl reset	
 	bl get_player_pos
@@ -80,14 +80,14 @@ after_current_value:
 	b train_loop
 	
 train_finish:
-	pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, lr}
+	pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, lr}
 	bx lr
 
 
 @ argument: r0 - player position return: r0 - action
 @ epsilon is hard coded to be 0.25
 get_action:
-	push {r1, r2, r3, r4, r5, lr}
+	push {r1, lr}
 	mov r1, r0
 	bl get_random_num
 	ands r0, r0, #3
@@ -102,13 +102,13 @@ return_best:
 	bl get_best_action
 
 finish_get_action:
-	pop {r1, r2, r3, r4, r5, lr}	
+	pop {r1, lr}	
 	bx lr
 
 
 @ argument: r0 - player position return: r0 - best action
 get_best_action:
-	push {r1, r2, r3, r4, r5, lr}
+	push {r1, r2, lr}
 	lsl r0, r0, #4   @ each index consumes 4*4 bytes
 	ldr r1, =Qs
 	add r1, r0, r1
@@ -133,12 +133,12 @@ loop_get_best_action:
 	b loop_get_best_action
 
 finish_get_best_action:	
-	pop {r1, r2, r3, r4, r5, lr}
+	pop {r1, r2, lr}
 	bx lr
 
 @ argument: r0 - player position return: r0 - best value address
 get_best_value:
-	push {r1, r2, r3, r4, r5, lr}
+	push {r1, r2, lr}
 	lsl r0, r0, #4   @ each index consumes 4*4 bytes
 	ldr r1, =Qs
 	add r1, r0, r1
@@ -163,7 +163,7 @@ loop_get_best_value:
 	b loop_get_best_value
 
 finish_get_best_value:	
-	pop {r1, r2, r3, r4, r5, lr}
+	pop {r1, r2, lr}
 	bx lr
 
 
