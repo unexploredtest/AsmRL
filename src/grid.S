@@ -13,11 +13,13 @@
 .global step
 .global print_board
 
+@ A function that returns the player's position
 get_player_pos:
 	ldr r0, =player_pos
 	ldr r0, [r0]
 	bx lr
 
+@ A function that reset's the player's position
 reset:
 	push {r0, r1}
 	
@@ -32,8 +34,9 @@ reset:
 	pop {r0, r1}
 	bx lr
 
-@ arg: r0 - action. 0: up,  1: right, 2: down, 3: left
-@ return: r0, reward
+@ A function move's the player in a direction corresponding to the input
+@ arguments: r0 - action. 0 is up, 1 is right, 2 is down and 3 is left
+@ return: reward
 step:
 	@ r0 represents the action, r1 the address of current pos, r2 the value of the current pos, r3 the possibly new pos, r4 the goal pos, r5 the reward
 	push {r1, r2, r3, r4, r5, r6, r7}
@@ -93,6 +96,7 @@ move_left:
 	beq after_change
 	b after_nochange
 
+@ A function that prints the board's state to the console.
 print_board:
 	push {r0, r1, r2, r3, r4, lr}
 	ldr r2, =goal_pos
@@ -145,7 +149,8 @@ finish_print:
 	pop {r0, r1, r2, r3, r4, lr}
 	bx lr
 
-@ arg r0: address to charater to print
+@ A function that prints a character to the console using syscall
+@ argument: r0 - address to charater to print
 print_char:
 	push {r0, r1, r2, r7}
 

@@ -6,6 +6,7 @@
 .section .text
 .global get_random_num
 
+@ A function that returns a random number between 0 and 3
 get_random_num:
 	push {r1, r2, r3, lr}	
 	
@@ -28,7 +29,8 @@ get_random_num:
 	pop	{r1, r2, r3, lr}	
 	bx lr
 
-@ arg: number, return: sumed bits
+@ A function that returns the sum of the digits of a number in binary form
+@ argument: r0 - The number to sum the digits over
 sum_bits:
 	push {r1, r3, r4, lr}
 

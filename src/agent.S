@@ -6,10 +6,10 @@
 
 .section .text
 .global train
-@ .global get_value
 .global get_best_action
 
-@ parameter. r0: num of training steps
+@ A function that trains the agent
+@ argument: r0 - number of training steps
 train:
 	@ r0: volatile, r1: steps remaining, r2: player pos, r3: next player pos, r4: action, r5: reward
 	@ r6: relative address of current action, r8: num of visits
@@ -83,9 +83,9 @@ train_finish:
 	pop {r0, r1, r2, r3, r4, r5, r6, r7, r8, lr}
 	bx lr
 
-
-@ argument: r0 - player position return: r0 - action
-@ epsilon is hard coded to be 0.25
+@ A function that chooses an action using epsilon-greedy given a board state. epsilon is hard coded to be 0.25.
+@ argument: r0 - player position
+@ return: action
 get_action:
 	push {r1, lr}
 	mov r1, r0
@@ -106,7 +106,9 @@ finish_get_action:
 	bx lr
 
 
-@ argument: r0 - player position return: r0 - best action
+@ A function that chooses an chooses the best action given past data. (greedy)
+@ argument: r0 - player position
+@ return: Best action
 get_best_action:
 	push {r1, r2, lr}
 	lsl r0, r0, #4   @ each index consumes 4*4 bytes
@@ -135,8 +137,9 @@ loop_get_best_action:
 finish_get_best_action:	
 	pop {r1, r2, lr}
 	bx lr
-
-@ argument: r0 - player position return: r0 - best value address
+@ A function that returns the address to the value corresponding to the best action given a board state.
+@ argument: r0 - player position
+@ return: best value address
 get_best_value:
 	push {r1, r2, lr}
 	lsl r0, r0, #4   @ each index consumes 4*4 bytes
