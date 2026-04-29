@@ -1,6 +1,5 @@
 .section .data
 	Qs: .fill 256, 4, 0          @ 8 * 8 * 4 
-	visits: .fill 256, 4, 0      @ 8 * 8 * 4 
 	gamma: .float 0.9
 	alpha: .float 0.1
 
@@ -12,7 +11,7 @@
 @ argument: r0 - number of training steps
 train:
 	@ r0: volatile, r1: steps remaining, r2: player pos, r3: next player pos, r4: action, r5: reward
-	@ r6: relative address of current action, r8: num of visits
+	@ r6: relative address of current action
 	push {r0, r1, r2, r3, r4, r5, r6, r7, r8, lr}
 	mov r1, r0
 	bl reset	
@@ -38,12 +37,6 @@ after_reset:
 	lsl r6, r2, #4   @ multiply by 4*4=16
 	lsl r7, r4, #2   @ multiply by 4
 	add r6, r6, r7
-	ldr r7, =visits
-	add r7, r6, r7
-	ldr r8, [r7]
-	add r8, r8, #1
-	str r8, [r7]
-	sub r8, r8, #1
 	
 	@ s0: new_value, s1: current_value, s2: next_value, s3: gamma, s4: alpha, s5: reward
 
