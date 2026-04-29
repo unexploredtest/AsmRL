@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          apt-get update && apt-get install -y --no-install-recommends make gcc-arm-linux-gnueabi qemu-user
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends make gcc-arm-linux-gnueabi qemu-user
 
       - name: Run
         run: qemu-arm ./main
